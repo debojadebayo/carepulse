@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from './button'
+import { Button } from './ui/button'
 import Image from 'next/image'
 
 interface SubmitButtonProps {
@@ -27,7 +27,7 @@ const SubmitButton = ({isLoading, children, className}:SubmitButtonProps) => {
                 Loading ...
             </div>
 
-        ): children}
+        ): (children)}
     </Button>
   )
 }

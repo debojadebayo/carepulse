@@ -3,19 +3,29 @@
 import React from 'react'
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { E164Number } from 'libphonenumber-js'
 import { Input } from "@/components/ui/input"
 import { Control } from 'react-hook-form'
-import { FormFieldType } from './Forms/PatientForm'
 import Image from 'next/image'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 
+
+export enum FormFieldType {
+    INPUT = "input",
+    TEXTAREA = "textarea",
+    CHECKBOX = "checkbox",
+    PHONE_INPUT= "phoneInput",
+    DATE_PICKER = "datePicker",
+    SELECT = "select",
+    SKELETON = "skeleton",
+    
+  }
 interface CustomProps {
 
     control:Control<any>,
@@ -27,7 +37,7 @@ interface CustomProps {
     iconAlt?:string,
     disabled?:boolean,
     dateFormat?:string,
-    timeFormat?:string,
+    showTimeSelect?:string,
     children?:React.ReactNode,
     renderSkeleton?:(field:any)=>React.ReactNode,
 
@@ -76,7 +86,7 @@ const RenderField = ({field, props}:{field:any; props:CustomProps}) => {
 
 export const CustomFormField = (props:CustomProps) => {
 
-    const {control, fieldType, name, label, placeholder, iconSrc, iconAlt, disabled, dateFormat, timeFormat, children, renderSkeleton } = props
+    const {control, fieldType, name, label, placeholder, iconSrc, iconAlt, disabled, dateFormat, showTimeSelect, children, renderSkeleton } = props
 
     return (
     <FormField
@@ -85,7 +95,7 @@ export const CustomFormField = (props:CustomProps) => {
         render={({ field }) => (
         <FormItem className="flex-1">
             {fieldType !== FormFieldType.CHECKBOX && label && (
-                <FormLabel>{label}</FormLabel>
+                <FormLabel className='shad-input-label'>{label}</FormLabel>
             )}
             <RenderField field={field} props={props} />
             <FormMessage className='shad-error'/>
