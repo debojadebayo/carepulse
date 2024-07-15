@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { Form } from "@/components/ui/form"
 import { CustomFormField, FormFieldType } from "../CustomFormField"
 import SubmitButton from '../SubmitButton'
-import { UserValidationSchema } from '@/lib/validation'
+import { UserFormValidation } from '@/lib/validation'
 import { useRouter } from 'next/navigation'
 import { createUser } from '@/lib/actions/patient.actions'
 import 'react-phone-number-input/style.css'
@@ -17,8 +17,8 @@ const PatientForm = () => {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   
-  const form = useForm<z.infer<typeof UserValidationSchema>>({
-    resolver: zodResolver(UserValidationSchema),
+  const form = useForm<z.infer<typeof UserFormValidation>>({
+    resolver: zodResolver(UserFormValidation),
     defaultValues: {
       name: "",
       email: "",
@@ -27,7 +27,7 @@ const PatientForm = () => {
   })
 
 
-  async function onSubmit(values: z.infer<typeof UserValidationSchema>) {
+  async function onSubmit(values: z.infer<typeof UserFormValidation>) {
     setIsLoading(true)
     console.log(isLoading)
   

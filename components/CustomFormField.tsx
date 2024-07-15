@@ -14,7 +14,11 @@ import { Control } from 'react-hook-form'
 import Image from 'next/image'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Select, SelectTrigger, SelectValue, SelectContent } from './ui/select'
+import { Textarea } from './ui/textarea'
+import { Checkbox } from './ui/checkbox'
 
 export enum FormFieldType {
     INPUT = "input",
@@ -26,6 +30,7 @@ export enum FormFieldType {
     SKELETON = "skeleton",
     
   }
+  
 interface CustomProps {
 
     control:Control<any>,
@@ -45,7 +50,8 @@ interface CustomProps {
 
 const RenderField = ({field, props}:{field:any; props:CustomProps}) => {
 
-    const { fieldType, iconSrc, iconAlt } = props
+    const { fieldType, iconSrc, iconAlt, dateFormat, showTimeSelect, renderSkeleton, placeholder, children, disabled, label, name } = props
+
     switch (fieldType) {
         case FormFieldType.INPUT:
             return (
@@ -64,7 +70,16 @@ const RenderField = ({field, props}:{field:any; props:CustomProps}) => {
                     </FormControl>
 
                 </div>
-            ) 
+            )
+        case FormFieldType.TEXTAREA:
+            return (
+                <FormControl>
+                    <Textarea {...field} {...props} 
+                    placeholder={placeholder}
+                    className='shad-textArea'
+                    disabled={disabled}/>
+                </FormControl>
+            )
         case FormFieldType.PHONE_INPUT:
             return (
                 <FormControl>
@@ -78,6 +93,55 @@ const RenderField = ({field, props}:{field:any; props:CustomProps}) => {
                         value={field.value as E164Number | undefined} 
                          />
                 </FormControl>
+            )
+        case FormFieldType.DATE_PICKER:
+            return (
+                <div className='flex border rounded-md bg-dark-400 border-dark-500'>
+                    <Image
+                        src='/assets/icons/calendar.svg'
+                        alt='calendar'
+                        height={24}
+                        width={24}
+                        className='ml-2'
+                    />
+                    <DatePicker 
+                        selected={field.value}
+                        onChange={(date:Date | null, event: React.SyntheticEvent<any> | undefined) => field.onChange(date)}
+                        wrapperClassName='date-picker'
+                        dateFormat={ dateFormat ?? "dd/MM/yyyy"}
+                        timeInputLabel='Time:'
+                    />
+                </div>
+            )
+        case FormFieldType.SKELETON:
+            return (
+                renderSkeleton ? renderSkeleton(field) : null
+            )
+        case FormFieldType.SELECT:
+            return (
+                <FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger className='shad-select-trigger'>
+                                <SelectValue placeholder={placeholder} />
+                            </SelectTrigger>
+                            <SelectContent className='shad-select-content'>
+                                {children}
+                            </SelectContent>
+                    </Select>
+                </FormControl>
+            )
+        case FormFieldType.CHECKBOX:
+            return (
+                <div className='flex gap-4 p-2'>
+                    <FormControl>
+                        <Checkbox
+                        id={name}
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        />
+                    </FormControl>
+                    <FormLabel className='shad-input-label'>{label}</FormLabel>
+                </div>
             )
 
 }
