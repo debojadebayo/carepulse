@@ -19,7 +19,9 @@ import Image from 'next/image'
 import { FileUp } from 'lucide-react'
 import FileUpload from '../FileUpload'
 
-const RegisterForm = ( {user}: {user:User}) => {
+
+
+const RegisterForm = ({user}: {user:User}) => {
   
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -28,21 +30,22 @@ const RegisterForm = ( {user}: {user:User}) => {
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
       ...PatientFormDefaultValues,
-      name: "",
-      email: "",
-      phone: "",
+
+      // I have not imported the info name:user.name because it results in 
+      // undefined as I am directly navigating to localhost/patients/[userId]/register
+      // I will need to fix this in the future for the normal login 
     },
+
   })
 
 
   async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
     setIsLoading(true); 
 
-
     // stores the uploaded file and image in a Blob format 
     let formData
 
-    if(values.identificationDocument && values.identificationDocument.length > 0){
+    if(values.identificationDocument && values.identificationDocument?.length > 0){
    
       const blobFile = new Blob([values.identificationDocument[0]], {
         type:values.identificationDocument[0].type
@@ -51,29 +54,53 @@ const RegisterForm = ( {user}: {user:User}) => {
     formData= new FormData()
     formData.append('blobFile', blobFile)
     formData.append('fileName', values.identificationDocument[0].name)
+
+    console.log(formData)
   }
 
-  //pushes user form details to database
+  //pushes the rest of user data to database
 
     try {
-      const patientData = {
+
+      const patient = {
         userId: user.$id,
-        ...values,
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
         birthDate: new Date(values.birthDate),
-        identificationDocument: formData
+        gender: values.gender,
+        address: values.address,
+        occupation: values.occupation,
+        emergencyContactName: values.emergencyContactName,
+        emergencyContactNumber: values.emergencyContactNumber,
+        primaryPhysician: values.primaryPhysician,
+        insuranceProvider: values.insuranceProvider,
+        insurancePolicyNumber: values.insurancePolicyNumber,
+        allergies: values.allergies,
+        currentMedication: values.currentMedication,
+        familyMedicalHistory: values.familyMedicalHistory,
+        pastMedicalHistory: values.pastMedicalHistory,
+        identificationType: values.identificationType,
+        identificationNumber: values.identificationNumber,
+        identificationDocument: values.identificationDocument
+          ? formData
+          : undefined,
+        privacyConsent: values.privacyConsent,
       }
 
-      const patient = await registerPatient(patientData)
-      
-      router.push(`/patients/${user.$id}/new-appointment`)
-      
-      setIsLoading(false)
+      const newPatient = await registerPatient(patient)
 
+      console.log(newPatient)
+      
+      router.push(`/patients/${user.$id}/new-appointment`) //should stick to newUser as that is what you used in your previous code 
+      
+      
     } catch (error: any) {
-    console.error(error)
-    
+      console.error(error)
+      
     }
-
+    
+    setIsLoading(false)
   }
 
   return (

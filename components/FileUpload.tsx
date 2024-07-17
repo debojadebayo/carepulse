@@ -5,6 +5,10 @@ import React, {useCallback} from 'react'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
 import { convertFileToUrl } from '@/lib/utils'
+
+
+// I'm using react-dropzone to handle file uploads
+
 type fileUpoadProps = {
     files: File[] | undefined 
     onChange: (files: File[]) => void
@@ -18,8 +22,8 @@ const FileUpload = ({files, onChange}:fileUpoadProps) => {
 
 
   return (
-    <div {...getRootProps} className="file-upload">
-      <input {...getInputProps} />
+    <div {...getRootProps()} className="file-upload">
+      <input {...getInputProps()} />
       {
        files && files?.length > 0 ? (
         <Image
