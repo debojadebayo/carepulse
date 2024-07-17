@@ -42,7 +42,7 @@ interface CustomProps {
     iconAlt?:string,
     disabled?:boolean,
     dateFormat?:string,
-    showTimeSelect?:string,
+    showTimeSelect?:boolean,
     children?:React.ReactNode,
     renderSkeleton?:(field:any)=>React.ReactNode,
 
@@ -110,6 +110,7 @@ const RenderField = ({field, props}:{field:any; props:CustomProps}) => {
                         wrapperClassName='date-picker'
                         dateFormat={ dateFormat ?? "dd/MM/yyyy"}
                         timeInputLabel='Time:'
+                        showTimeSelect={showTimeSelect ?? false}
                     />
                 </div>
             )

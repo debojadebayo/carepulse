@@ -300,7 +300,7 @@ const RegisterForm = ({user}: {user:User}) => {
             control = {form.control}
             fieldType= {FormFieldType.TEXTAREA}
             name="pastMedicalHistory"
-            label="ast Medical History (if relevant)"
+            label="Past Medical History (if relevant)"
             placeholder="ex Type 2 Diabetes, Hypertension"
               // this could be a select button which imports a database/list of conditions as per ICD-10, SNOMED 
           />

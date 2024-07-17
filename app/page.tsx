@@ -22,7 +22,7 @@ export default function Home() {
           <PatientForm/>
 
           <div className="text-14-regular mt-20 flex justify-between">
-            <span className="text-dark-600 justify-items-end xl:text-left">© CarePulse 2024 - all rights reserved</span>
+            <span className="justify-items-end text-dark-600 xl:text-left">© CarePulse 2024 - all rights reserved</span>
             <Link href="/?admin=true" className="text-green-500"> Admin Login</Link>
           </div>
         </div>

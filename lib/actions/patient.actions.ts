@@ -58,6 +58,25 @@ export const getUser = async(userId:string) => {
 
 }
 
+export const getPatient = async(userId:string) => {
+
+    console.log("getPatient function called with userId:", userId);
+
+    try{
+        const patients = await databases.listDocuments(
+            DATABASE_ID!,
+            PATIENT_COLLECTION_ID!,
+            [Query.equal('userId', [userId])] //there is no bracket around the userID, is that necessary
+        )
+
+        return parseStringify(patients.documents[0])
+
+    } catch (error: any) {
+        console.error("Ahh shit, An error occurred whilst trying to fetch the patient ", error)
+    }
+
+}
+
 //register patient details 
 
 export const registerPatient = async({identificationDocument, ...patient}: RegisterUserParams) => {
