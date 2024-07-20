@@ -63,7 +63,7 @@ const RegisterForm = ({user}: {user:User}) => {
     try {
 
       const patient = {
-        userId: user.$id,
+        userID: user.$id,
         name: values.name,
         email: values.email,
         phone: values.phone,
@@ -73,12 +73,12 @@ const RegisterForm = ({user}: {user:User}) => {
         occupation: values.occupation,
         emergencyContactName: values.emergencyContactName,
         emergencyContactNumber: values.emergencyContactNumber,
-        primaryPhysician: values.primaryPhysician,
+        primaryCarePhysician: values.primaryPhysician,
         insuranceProvider: values.insuranceProvider,
         insurancePolicyNumber: values.insurancePolicyNumber,
         allergies: values.allergies,
         currentMedication: values.currentMedication,
-        familyMedicalHistory: values.familyMedicalHistory,
+        familyHistory: values.familyMedicalHistory,
         pastMedicalHistory: values.pastMedicalHistory,
         identificationType: values.identificationType,
         identificationNumber: values.identificationNumber,
@@ -86,6 +86,8 @@ const RegisterForm = ({user}: {user:User}) => {
           ? formData
           : undefined,
         privacyConsent: values.privacyConsent,
+        treatmentConsent: values.treatmentConsent,
+        disclosureConsent: values.disclosureConsent,
       }
 
       const newPatient = await registerPatient(patient)
@@ -408,7 +410,7 @@ const RegisterForm = ({user}: {user:User}) => {
 
    
       
-      <SubmitButton isLoading={isLoading}>Sumit and Continue</SubmitButton>
+      <SubmitButton isLoading={isLoading}>Submit and Continue</SubmitButton>
     </form>
   </Form>
   )

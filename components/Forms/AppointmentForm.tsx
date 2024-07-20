@@ -1,6 +1,5 @@
 "use client"
 
-
 import React, { useState } from 'react'
 import { Form } from '../ui/form'
 import { CustomFormField, FormFieldType } from '../CustomFormField'
@@ -14,19 +13,20 @@ import { Doctors } from '@/constants'
 import { SelectItem } from '../ui/select'
 import Image from 'next/image'
 import { Appointment } from '@/types/appwrite.types'
+import { createAppointment } from '@/lib/actions/appointment.actions'
 
 
 const AppointmentForm = ({
     userId,
     type,
-    appointment
+    appointment,
+    patientId
 }:{
     userId:string,
     type:"create" | "schedule" |"delete",
-    appointment?: Appointment
+    appointment?: Appointment,
+    patientId?: string
 }) => {
-
-    // haven't entered patientId
 
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
@@ -62,7 +62,6 @@ const AppointmentForm = ({
   
     async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
       setIsLoading(true)
-      console.log(isLoading)
     
       let status  
       switch (type) {
@@ -76,14 +75,37 @@ const AppointmentForm = ({
             status= "pending"
   
         try {
+            if(type === "create" && patientId){
+                const appointmentData = {
+                    userID: userId, 
+                    patient: patientId,
+                    primaryPhysician: values.primaryPhysician,
+                    schedule: new Date(values.schedule),
+                    reason: values.reason,
+                    note: values.note,
+                    status: status as Status
+                }
+
+                const appointment = await createAppointment(appointmentData)
+
+                if(appointment){
+                    form.reset()
+                    router.push(`patients/${userId}/new-appointments/success?appointmentId=${appointment.$id}`)
+                }
+
+                console.log(appointment)
+
+            }
             
         } catch (error) {
+            console.error("An error occurred when booking the appointment", error)
+            throw error
             
         }
   
       setIsLoading(false)
   
-    }
+    }}
      
         return (
           

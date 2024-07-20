@@ -58,15 +58,15 @@ export const getUser = async(userId:string) => {
 
 }
 
-export const getPatient = async(userId:string) => {
+export const getPatient = async(userID:string) => {
 
-    console.log("getPatient function called with userId:", userId);
+    console.log("getPatient function called with userId:", userID);
 
     try{
         const patients = await databases.listDocuments(
             DATABASE_ID!,
             PATIENT_COLLECTION_ID!,
-            [Query.equal('userId', [userId])] //there is no bracket around the userID, is that necessary
+            [Query.equal("userID", [userID])] //Appwrite Exception: Attribute not found in schema
         )
 
         return parseStringify(patients.documents[0])
@@ -80,6 +80,7 @@ export const getPatient = async(userId:string) => {
 //register patient details 
 
 export const registerPatient = async({identificationDocument, ...patient}: RegisterUserParams) => {
+
 
     try {
         let file 
@@ -117,6 +118,7 @@ export const registerPatient = async({identificationDocument, ...patient}: Regis
         
     } catch (error) {
         console.error("An error occurred whilst trying to register a new patient", error)   
+        throw error
     }
 
 }

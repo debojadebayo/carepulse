@@ -6,9 +6,8 @@ import { getPatient } from '@/lib/actions/patient.actions'
 const AppointmentPage = async ({params}:SearchParamProps) => {
 
     const { userid } = params
-    const user = await getPatient(userid)
-
-
+    const patient = await getPatient(userid)
+    
   return (
     <div className="flex h-screen max-h-screen">
         <section className="container my-auto remove-scrollbar">
@@ -24,8 +23,8 @@ const AppointmentPage = async ({params}:SearchParamProps) => {
 
                 <AppointmentForm
                 type="create"
-                userId={userid}
-                // patientId={patient?.$id}
+                userId={userid} //userID from the search parameters
+                patientId={patient?.$id}//ID from the patient in the database 
                 />
         
                 <p className="copyright mt-10 py-12">© CarePulse 2024 - all rights reserved</p>
