@@ -142,6 +142,10 @@
   }
 
   /* ===== TYPOGRAPHY */
+
+  .text-48-bold {
+    @apply text-[48px] leading-[60px] font-bold;
+  }
   .text-36-bold {
     @apply text-[36px] leading-[40px] font-bold;
   }
@@ -256,7 +260,7 @@
   }
 
   .shad-otp-slot {
-    @apply text-36-bold justify-center flex border border-dark-500 rounded-lg size-16 gap-4 !important;
+    @apply text-36-bold justify-center flex border-2 border-green-500 rounded-lg size-16 gap-4 !important;
   }
 
   .shad-alert-dialog {
