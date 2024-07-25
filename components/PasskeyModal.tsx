@@ -24,23 +24,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { error } from 'console'
 import { decryptKey, encryptKey } from '@/lib/utils'
 
-
-
-// set router to push to the home page with the home button 
-
-
-//passkey 
-//import input OTP from shadcn
-//set state for passkey so that it can keep what the client enters 
-//style the passkeys 
-//set the error message for the passkey
-//set validation for the passkey using the validatePasskey function-- checks whether the passkey the client has entered is equal to NEXT-PUBLIC PASSKEY 
-//use localStorage to save the passkey.. First encrypt the passkey and then pass the key to the local storage
-
-
-//add useEffect to check whether encrypted key exists and then decrypt the key and redirect to the admin page
-
-
 const PasskeyModal = () => {
 
     const [open, setOpen] = useState(true)
@@ -52,22 +35,29 @@ const PasskeyModal = () => {
     }
 
     const router = useRouter()
-    const path = usePathname()
-    
-    const encryptedKey = typeof window !== 'undefined' && window.localStorage.getItem('accessKey')
-        
-        useEffect(() => {
-            const accessKey = encryptedKey && decryptKey(encryptedKey)
-            if (path){
-                if(accessKey === process.env.NEXT_PUBLIC_PASSKEY){
-                    setOpen(false),
-                    router.push('/admin')
-                } else {
-                    setOpen(true)
-                }   
-            }
-        }, [encryptedKey])
+    const pathname = usePathname()
 
+    //checks if user has access key in local storage. First ensure that we are in the window context 
+    //useEffect to check if acceess key is in local storage make sure to decrypt the key before comparing it to the env variable
+    //then push to admin page
+
+    const encryptedKey = typeof window !== "undefined" && window.localStorage.getItem('accessKey')
+
+    useEffect(() => {
+
+        const accessKey = encryptedKey && decryptKey(encryptedKey)
+
+        if(pathname && accessKey === process.env.NEXT_PUBLIC_PASSKEY){
+            router.push('/admin')
+            setOpen(false)
+            console.log(pathname)
+        } else {
+            setOpen(true)
+        }
+    }, [encryptedKey])
+
+
+    //checks if passkey is valid by comparing it to env variable
     const validateKey = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {  
         e.preventDefault()
         if(passKey === process.env.NEXT_PUBLIC_PASSKEY){
