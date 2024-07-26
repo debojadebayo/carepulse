@@ -78,7 +78,7 @@ export const getRecentAppointments = async () => {
             
         const appointments = returnedAppointments.documents as Appointment []
             
-            return appointments.reduce((acc, appointment) => {
+        const counts =  appointments.reduce((acc, appointment) => {
                 if(appointment.status === "scheduled") {
                     acc.scheduled += 1
                 } else if(appointment.status === "pending") {
@@ -89,6 +89,15 @@ export const getRecentAppointments = async () => {
 
             return acc
         }, initialAppointmentCount)
+
+        const data = {
+            totalAppointments: returnedAppointments.total,
+            ...counts, 
+            document:appointments 
+
+        }
+
+        return data
         
     } catch (error) {
         console.log("Problem with getting the list of appointments", error)
