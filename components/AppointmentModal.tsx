@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from './ui/button'
 import clsx from 'clsx'
-import AppointmentForm from '@/components/forms/AppointmentForm'
 import { Appointment } from '@/types/appwrite.types'
+import AppointmentForm from './forms/AppointmentForm'
 
 
 const AppointmentModal = ({
@@ -54,7 +54,7 @@ const AppointmentModal = ({
          </DialogDescription>
         </DialogHeader>
 
-        <AppointmentForm 
+        <AppointmentForm
         userId={userId}
         patientId={patientId}
         type={type}
