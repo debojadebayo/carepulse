@@ -36,16 +36,16 @@ const SuccessPage = async ({searchParams, params }:SearchParamProps) => {
                 alt="carepulse-logo"
                 height={1000}
                 width={1000}
-                className='h-12 w-full mb-20'
+                className='h-12 w-full mb-12'
                 />
             </div>
 
             <div className='flex justify-center'>
                 <Image
-                src="/assets/icons/check-circle.svg"
+                src="/assets/gifs/success.gif"
                 alt="check-circle-icon"
-                height={100}
-                width={100}
+                height={250}
+                width={250}
                 className='text-green-500'
                 />
             </div>
