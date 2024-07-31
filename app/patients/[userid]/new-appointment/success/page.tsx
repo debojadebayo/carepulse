@@ -51,7 +51,7 @@ const SuccessPage = async ({searchParams, params }:SearchParamProps) => {
             </div>
 
             <h1 className='header text-center'>Your <span className='text-green-500'>appointment request</span> has been successfully submitted</h1>
-            <p className='text-xl text-center mt-5 text-gray-200'>We'll be in touch shortly to confirm</p>
+            <p className='text-xl text-center mt-5 text-gray-200'>We&apos;ll be in touch shortly to confirm</p>
 
             <hr className="border-t-1 border-gray-500 my-6" />
             <div className='flex flex-row flex-center gap-6'>

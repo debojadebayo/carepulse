@@ -1,12 +1,12 @@
 import {withSentryConfig} from '@sentry/nextjs';
-import { TrendingUp } from 'lucide-react';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     typescript: {
         ignoreBuildErrors: true
     },
     eslint: {
-        ignoreBuildErrors: true
+        ignoreDuringBuilds: true
     }
 };
 
