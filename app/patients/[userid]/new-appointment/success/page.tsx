@@ -3,10 +3,17 @@ import Image from 'next/image'
 import { Doctors } from '@/constants'
 import { getAppointment } from '@/lib/actions/appointment.actions'
 import { format } from 'date-fns'
+import { getUser } from '@/lib/actions/patient.actions'
+import * as Sentry from '@sentry/nextjs'
 
-const SuccessPage = async ({searchParams, params: {userID} }:SearchParamProps) => {
+const SuccessPage = async ({searchParams, params }:SearchParamProps) => {
 
-    const appointmentId = searchParams?.appointmentId as string 
+    const appointmentId = searchParams?.appointmentId as string
+    const { userid } = params
+    const user = await getUser(userid)
+
+    Sentry.metrics.set("user_view_register", user.name);
+
 
 
     let appointment: CreateAppointmentParams
@@ -21,7 +28,7 @@ const SuccessPage = async ({searchParams, params: {userID} }:SearchParamProps) =
 
   return (
     <div className='flex-center flex-col h-screen max-h-screen'>
-        <div className='max-w-[650px]'>
+        <div className='max-w-[750px]'>
 
             <div className='flex-center p-[5%]'>
                 <Image 

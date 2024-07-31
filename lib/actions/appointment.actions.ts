@@ -11,6 +11,7 @@ import {
     } from '../appwrite.config'
 import { parseStringify } from '../utils'
 import { Appointment } from '@/types/appwrite.types'
+import { revalidatePath } from 'next/cache'
 
 
 //create appointment 
@@ -29,7 +30,7 @@ export const createAppointment = async (appointment: CreateAppointmentParams) =>
         
         
     } catch (error) {
-        console.log("Ahh shit there's a problem", error)
+        console.log("Problem creating Appointment", error)
         throw error 
         
     }
@@ -50,13 +51,13 @@ export const getAppointment = async (appointmentID: string) => {
         return parseStringify(returnedAppointment)
         
     } catch (error) {
-        console.log("Problem with getting appointment")
+        console.log("Problem with getting appointment", error)
         throw error 
         
     }
 }
 
-// get recent appoints function - fetch appointment using the appwrite docs 
+// get recent appointments function - fetch appointment using the appwrite docs 
 
 export const getRecentAppointments = async () => {
     try {
@@ -64,7 +65,8 @@ export const getRecentAppointments = async () => {
             DATABASE_ID!,
             APPOINTMENTS_COLLECTION_ID!,
             [
-                Query.orderAsc("$createdAt")
+                Query.orderAsc("$createdAt"), 
+                Query.limit(100)
             ]
             
         )
@@ -93,7 +95,7 @@ export const getRecentAppointments = async () => {
         const data = {
             totalAppointments: returnedAppointments.total,
             ...counts, 
-            document:appointments 
+            documents: appointments 
 
         }
 
@@ -104,4 +106,29 @@ export const getRecentAppointments = async () => {
         throw error
         
     }
+}
+
+export const updateAppointment = async ({appointmentId, userID, appointment, type}: UpdateAppointmentParams) => {
+    try {
+        const updatedDocument = await databases.updateDocument(
+            DATABASE_ID!, 
+            APPOINTMENTS_COLLECTION_ID!, 
+            appointmentId,
+            appointment
+        )
+
+        if (!updatedDocument) {
+            throw new Error("Appointment not found")
+        }
+
+        //SMS notification 
+
+        revalidatePath("/admin")
+        return parseStringify(updatedDocument)
+        
+    } catch (error) {
+        console.log("Error with your appointment", error)
+        throw error
+    }
+
 }

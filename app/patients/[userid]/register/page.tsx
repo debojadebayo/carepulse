@@ -3,16 +3,21 @@ import React from 'react'
 import Image from 'next/image'
 import RegisterForm from '@/components/forms/RegisterForm'
 import { getUser } from '@/lib/actions/patient.actions'
+import * as Sentry from '@sentry/nextjs'
 
 const Register = async ({ params }:SearchParamProps) => {
 
   const { userid } = params
 
-  // console.log("Received userId in Register component:", userid);
-  // console.log("Page component params", params)
-
+  
+  // import Sentry here, use import * as Sentry- review the import details from metrics docs 
+  // do the same with a user view on the new appointment page 
+  //final track in the success page- you will need to import the getUser function in order to use the user_name
+  
   const user = await getUser(userid)
 
+  Sentry.metrics.set("user_view_register", user.name);
+  
   return (
     <div className="flex h-screen max-h-screen">
       <section className="container remove-scrollbar">

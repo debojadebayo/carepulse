@@ -10,11 +10,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { columns } from '@/components/table/columns'
+import { Suspense } from 'react'
+import  LoadingTable  from "@/components/table/LoadingTable"
 
 const Admin = async () => {
 
     const appointments = await getRecentAppointments()
-    console.log("Here are the appointments from the database", appointments.document)
+
   return (
     <div className='max-w-7xl flex flex-col mx-auto gap-14'>
         <header className='admin-header'>
@@ -60,7 +62,9 @@ const Admin = async () => {
 
             </section>
             <section>
-                <DataTable columns={columns} data={appointments.document}  />
+                <Suspense fallback={<LoadingTable />}>
+                    <DataTable columns={columns} data={appointments.documents}  />
+                </Suspense>
             </section>
         </main>
     </div>

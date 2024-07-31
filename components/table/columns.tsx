@@ -5,6 +5,8 @@ import StatusBadge from "../StatusBadge"
 import { Appointment } from "@/types/appwrite.types"
 import Image from "next/image"
 import { Doctors } from "@/constants"
+import { formatDateTime } from "@/lib/utils"
+import AppointmentModal from "../AppointmentModal"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -15,14 +17,17 @@ export const columns: ColumnDef<Appointment>[] = [
     header: "Patient",
     cell: ({ row }) => (
         <p className="text-14-medium">
-            {row.index + 1}. {row.original.appointment.patient.name}
+            {row.index + 1}. {row.original.patient.name}
         </p>
     )
   },
   {
     accessorKey: "schedule",
     header: "Date & Time",
-    cell: ({ row }) => formatDateTime(row.original.appointment.schedule)
+    cell: ({ row }) => {
+      const formattedDate = formatDateTime(row.original.schedule)
+      return formattedDate.dateTime
+    }
   },
   {
     accessorKey: "status",
@@ -45,20 +50,36 @@ export const columns: ColumnDef<Appointment>[] = [
             <Image
                 src={doctor?.image || "/assets/images/dr-cameron.png"}
                 alt={row.original.primaryPhysician}
-                width={24}
-                height={24}
-                className="rounded-full" 
+                width={100}
+                height={100}
+                className="rounded-full size-8" 
             />
-            <p>{doctor?.name}</p>
+            <p className="whitespace-nowrap">{doctor?.name}</p>
         </div>
     )}
   },
   {
     accessorKey: "actions",
-    header: "Actions",
+    header: () => <div className="flex items-center justify-start mx-4">Actions</div>,
+    cell: ({ row }) => {
+      return (
+        
+        <div className="flex gap-1">
+          <AppointmentModal 
+          type="schedule"
+          patientId={row.original.patient.$id} 
+          userId= {row.original.userID}
+          appointment={row.original}/>
+       
+
+          <AppointmentModal 
+          type="cancel"
+          patientId={row.original.patient.$id} 
+          userId= {row.original.userID}
+          appointment={row.original}/>
+        </div>
+      
+      )
+    }
   }
 ]
-function formatDateTime(schedule: Date): any {
-    throw new Error("Function not implemented.")
-}
-

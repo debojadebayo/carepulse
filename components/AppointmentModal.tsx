@@ -1,14 +1,67 @@
-//import Dialog componetn from shadcn 
-//Where do you find the properties of the dialog component in shadcn 
+//Where do you find the properties of the dialog component in shadcn?
+//define new useState which is opne, setOpen-- why do you need to do this
 //apppointment props: appointment type (schedule vs delete), patientID, userID, appointmentID, title, description
+//diaglog content className: shad-dialog sm: max-w-md
+//style dialog title 
 
-import React from 'react'
+"use client"
 
-const AppointmentModal = () => {
+import React, { useState } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from './ui/button'
+import clsx from 'clsx'
+import AppointmentForm from './forms/AppointmentForm'
+import { Appointment } from '@/types/appwrite.types'
+
+
+const AppointmentModal = ({
+  type,
+  patientId, 
+  userId,
+  appointment}:{
+  type:"schedule" | "cancel" 
+  patientId: string, 
+  userId: string, 
+  appointment: Appointment
+}) => {
+
+  const [open, setOpen] = useState(false)
+
   return (
-    <div>
-      Appointment Modal
-    </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button 
+        variant="ghost" 
+        className={clsx("capitalize", {
+          "text-green-500": type==="schedule",
+          "text-red-500": type==="cancel"
+        })}>
+          {type === "schedule" ? "Schedule": "Cancel"}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="shad-dialog sm:max-w-md">
+        <DialogHeader className="mb-4 space-y-3">
+          <DialogTitle className="capitalize">{type} Appointment</DialogTitle>
+          <DialogDescription>
+          Please fill in the following details to {type} appointment
+         </DialogDescription>
+        </DialogHeader>
+
+        <AppointmentForm 
+        userId={userId}
+        patientId={patientId}
+        type={type}
+        appointment={appointment}
+        setOpen={setOpen} />
+      </DialogContent>
+    </Dialog>
   )
 }
 

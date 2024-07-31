@@ -13,19 +13,21 @@ import { Doctors } from '@/constants'
 import { SelectItem } from '../ui/select'
 import Image from 'next/image'
 import { Appointment } from '@/types/appwrite.types'
-import { createAppointment } from '@/lib/actions/appointment.actions'
+import { createAppointment, updateAppointment } from '@/lib/actions/appointment.actions'
 
 
 const AppointmentForm = ({
     userId,
     type,
     appointment,
-    patientId
+    patientId,
+    setOpen
 }:{
     userId:string,
-    type:"create" | "schedule" |"delete",
+    type:"create" | "schedule" |"cancel",
     appointment?: Appointment,
     patientId?: string
+    setOpen?:(open:boolean)=>void 
 }) => {
 
     const [isLoading, setIsLoading] = useState(false)
@@ -36,9 +38,9 @@ const AppointmentForm = ({
     const form = useForm<z.infer<typeof AppointmentFormValidation>>({
       resolver: zodResolver(AppointmentFormValidation),
       defaultValues: {
-        primaryPhysician: appointment ? appointment?.primaryPhysician : "",
+        primaryPhysician: appointment ? appointment.primaryPhysician : "",
         schedule: appointment
-        ? new Date(appointment?.schedule!)
+        ? new Date(appointment.schedule!)
         : new Date(Date.now()),
       reason: appointment ? appointment.reason : "",
       note: appointment?.note || "",
@@ -51,7 +53,7 @@ const AppointmentForm = ({
         case "create":
             buttonLabel = "Request Appointment"
             break;
-        case "delete":
+        case "cancel":
             buttonLabel = "Cancel Appointment"
             break;
         default:
@@ -68,13 +70,15 @@ const AppointmentForm = ({
         case "schedule":
             status = "scheduled"
             break
-        case "delete":
+        case "cancel":
             status = "cancelled"
             break 
         default:
-            status= "pending"
-  
+            status= "pending" 
+      }
+
         try {
+            console.log("trying to submit")
             if(type === "create" && patientId){
                 const appointmentData = {
                     userID: userId, 
@@ -90,11 +94,29 @@ const AppointmentForm = ({
 
                 if(appointment){
                     form.reset()
-                    router.push(`patients/${userId}/new-appointments/success?appointmentId=${appointment.$id}`)
+                    router.push(`patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`)
                 }
 
-                console.log(appointment)
+            } else {
+                const appointmentToUpdate = {
+                    userID: userId, 
+                    appointmentId: appointment?.$id ?? "",
+                    appointment: {
+                        primaryPhysician: values?.primaryPhysician,
+                        schedule: new Date(values?.schedule),
+                        reason: values?.reason,
+                        status: status as Status,
+                        cancellationReason: values?.cancellationReason
+                    },
+                    type,
+                }
 
+                const updatedAppointment = await updateAppointment(appointmentToUpdate)
+
+                if(updatedAppointment){
+                    setOpen && setOpen(false)
+                    form.reset()
+                }
             }
             
         } catch (error) {
@@ -102,25 +124,27 @@ const AppointmentForm = ({
             throw error
             
         }
-  
+
       setIsLoading(false)
   
-    }}
+    }
      
         return (
           
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-8">
-            <section className="mb-12 space-y-4">
-              <div>
+         {type === "create" && 
+         <section className="mb-12 space-y-4">
+            <div>
                 <h1 className="text-5xl font-bold">New Appointment</h1>
               </div>
               <div className="mt-4">
                 <h3 className="text-lg font-medium text-dark-700">Request a new appointment in 10 seconds</h3>
               </div>
             </section>
+        }
 
-            {type !== "delete" && (
+            {type !== "cancel" && (
                 <>
                 <CustomFormField 
                 control={form.control}
@@ -180,7 +204,7 @@ const AppointmentForm = ({
                 </>
             )}
 
-            {type === "delete" && (
+            {type === "cancel" && (
                 <CustomFormField
                     fieldType={FormFieldType.TEXTAREA}
                     control={form.control}
@@ -191,7 +215,7 @@ const AppointmentForm = ({
                 )}
 
             
-            <SubmitButton isLoading={isLoading} className={`${type=== 'delete' ? "shad-danger-btn":"shad-primary-btn"} w-full`}>{buttonLabel}</SubmitButton>
+            <SubmitButton isLoading={isLoading} className={`${type=== 'cancel' ? "shad-danger-btn":"shad-primary-btn"} w-full`}>{buttonLabel}</SubmitButton>
           </form>
         </Form>
         )
