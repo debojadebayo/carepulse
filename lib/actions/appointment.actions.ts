@@ -1,6 +1,14 @@
+// set up Twilio as your messaging interface 
 
-// create an appointment object for the three different states that the appointment can be in 
-// use a reduce function to update the state of the appointment object according to the array of appointments that you've fetched from the database
+//create the messaging function here. use the databases.createSms function from appwrite 
+
+// use the messaging function in your update appointment. 
+// Can use template literals and const Sms message which responds depending on whether  
+// they've scheduled or cancelled 
+
+//await send SMS 
+
+
 "use server"
 
 import { ID, Query } from 'node-appwrite'
